@@ -14,9 +14,9 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
   const { id } = useParams();
   const context = useOutletContext();
 
-  const addCar = context?.addCar ?? onSubmit;
-  const updateCar = context?.updateCar ?? onSubmit;
-  const fetchCar = context?.getCarById ?? getCarById;
+  const addCar = context && context.addCar ? context.addCar : onSubmit;
+  const updateCar = context && context.updateCar ? context.updateCar : onSubmit;
+  const fetchCar = context && context.getCarById ? context.getCarById : getCarById;
 
   const [form, setForm] = useState(empty);
   const [notFound, setNotFound] = useState(false);
@@ -24,7 +24,7 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
   useEffect(() => {
     if (mode !== "edit") return;
 
-    const car = fetchCar?.(id);
+    const car = fetchCar ? fetchCar(id) : null;
     if (!car) {
       setNotFound(true);
       return;
@@ -49,8 +49,14 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
 
     const price = Number(form.pricePerDay);
     const seats = Number(form.seats);
-    if (!Number.isFinite(price) || price <= 0) return alert("Price must be a positive number.");
-    if (!Number.isFinite(seats) || seats <= 0) return alert("Seats must be a positive number.");
+    if (!Number.isFinite(price) || price <= 0) {
+      alert("Price must be a positive number.");
+      return;
+    }
+    if (!Number.isFinite(seats) || seats <= 0) {
+      alert("Seats must be a positive number.");
+      return;
+    }
 
     const payload = {
       name: form.name.trim(),
@@ -61,14 +67,21 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
     };
 
     if (!payload.name || !payload.type || !payload.transmission) {
-      return alert("Please fill in all fields.");
+      alert("Please fill in all fields.");
+      return;
     }
 
     if (mode === "create") {
-      if (!addCar) return alert("Add handler is not connected.");
+      if (!addCar) {
+        alert("Add handler is not connected.");
+        return;
+      }
       addCar(payload);
     } else {
-      if (!updateCar) return alert("Update handler is not connected.");
+      if (!updateCar) {
+        alert("Update handler is not connected.");
+        return;
+      }
       updateCar(id, payload);
     }
 

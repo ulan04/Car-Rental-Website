@@ -28,18 +28,25 @@ export default function App() {
   }, [cars]);
 
   function addCar(newCar) {
-    setCars((prev) => [{ ...newCar, id: crypto.randomUUID() }, ...prev]);
+    const next = { ...newCar, id: crypto.randomUUID() };
+    setCars((prev) => [next, ...prev]);
   }
 
   function updateCar(id, updatedCar) {
-    setCars((prev) => prev.map((c) => (c.id === id ? { ...c, ...updatedCar, id } : c)));
+    setCars((prev) =>
+      prev.map((car) => {
+        if (car.id === id) return { ...car, ...updatedCar, id };
+        return car;
+      })
+    );
   }
 
   function deleteCar(id) {
     setCars((prev) => prev.filter((car) => car.id !== id));
   }
+
   function getCarById(id) {
-    return cars.find((c) => c.id === id);
+    return cars.find((car) => car.id === id);
   }
 
   return (
@@ -85,11 +92,11 @@ function CarsLayout({ cars, onDelete, addCar, updateCar, getCarById }) {
   return (
     <Outlet
       context={{
-        cars,
-        onDelete,
-        addCar,
-        updateCar,
-        getCarById,
+        cars: cars,
+        onDelete: onDelete,
+        addCar: addCar,
+        updateCar: updateCar,
+        getCarById: getCarById,
       }}
     />
   );
