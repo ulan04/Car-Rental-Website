@@ -5,6 +5,7 @@ export default function NavLinks() {
     <nav className="nav">
       <Link to="/cars">Cars</Link>
       <Link to="/booking">Booking</Link>
+      <Link to="/support">Support</Link>
     </nav>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 
 const empty = {
   name: "",
@@ -12,6 +12,11 @@ const empty = {
 export default function CarForm({ mode, onSubmit, getCarById }) {
   const navigate = useNavigate();
   const { id } = useParams();
+  const context = useOutletContext();
+
+  const addCar = context?.addCar ?? onSubmit;
+  const updateCar = context?.updateCar ?? onSubmit;
+  const fetchCar = context?.getCarById ?? getCarById;
 
   const [form, setForm] = useState(empty);
   const [notFound, setNotFound] = useState(false);
@@ -19,7 +24,7 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
   useEffect(() => {
     if (mode !== "edit") return;
 
-    const car = getCarById?.(id);
+    const car = fetchCar?.(id);
     if (!car) {
       setNotFound(true);
       return;
@@ -32,7 +37,7 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
       seats: String(car.seats),
       transmission: car.transmission,
     });
-  }, [mode, id, getCarById]);
+  }, [mode, id, fetchCar]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -60,9 +65,11 @@ export default function CarForm({ mode, onSubmit, getCarById }) {
     }
 
     if (mode === "create") {
-      onSubmit(payload);
+      if (!addCar) return alert("Add handler is not connected.");
+      addCar(payload);
     } else {
-      onSubmit(id, payload);
+      if (!updateCar) return alert("Update handler is not connected.");
+      updateCar(id, payload);
     }
 
     navigate("/cars");

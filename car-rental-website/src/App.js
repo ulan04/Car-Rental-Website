@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Header from "./components/Header";
@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import Cars from "./pages/Cars";
 import CarForm from "./pages/CarForm";
 import Booking from "./pages/Booking";
+import Support, { SupportContact, SupportFAQ } from "./pages/Support";
 
 const STORAGE_KEY = "car_rental_cars_v1";
 
@@ -34,9 +35,9 @@ export default function App() {
     setCars((prev) => prev.map((c) => (c.id === id ? { ...c, ...updatedCar, id } : c)));
   }
 
-function deleteCar(id) {
-  setCars((prev) => prev.filter((car) => car.id !== id));
-}
+  function deleteCar(id) {
+    setCars((prev) => prev.filter((car) => car.id !== id));
+  }
   function getCarById(id) {
     return cars.find((c) => c.id === id);
   }
@@ -47,21 +48,49 @@ function deleteCar(id) {
 
       <Routes>
         <Route path="/" element={<Navigate to="/cars" replace />} />
-        <Route path="/cars" element={<Cars cars={cars} onDelete={deleteCar} />} />
-
-        <Route path="/cars/new" element={<CarForm mode="create" onSubmit={addCar} />} />
 
         <Route
-          path="/cars/:id/edit"
-          element={<CarForm mode="edit" onSubmit={updateCar} getCarById={getCarById} />}
-        />
+          path="/cars"
+          element={
+            <CarsLayout
+              cars={cars}
+              onDelete={deleteCar}
+              addCar={addCar}
+              updateCar={updateCar}
+              getCarById={getCarById}
+            />
+          }
+        >
+          <Route index element={<Cars />} />
+          <Route path="new" element={<CarForm mode="create" />} />
+          <Route path=":id/edit" element={<CarForm mode="edit" />} />
+        </Route>
 
         <Route path="/booking" element={<Booking />} />
+
+        <Route path="/support" element={<Support />}>
+          <Route index element={<SupportContact />} />
+          <Route path="faq" element={<SupportFAQ />} />
+        </Route>
 
         <Route path="*" element={<div className="container">404 Not Found</div>} />
       </Routes>
 
       <Footer />
     </div>
+  );
+}
+
+function CarsLayout({ cars, onDelete, addCar, updateCar, getCarById }) {
+  return (
+    <Outlet
+      context={{
+        cars,
+        onDelete,
+        addCar,
+        updateCar,
+        getCarById,
+      }}
+    />
   );
 }

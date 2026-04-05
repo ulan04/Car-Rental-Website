@@ -1,9 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import CarGrid from "../components/CarGrid";
 
-export default function Cars({ cars, onDelete }) {
+export default function Cars(props) {
   const navigate = useNavigate();
+  const context = useOutletContext();
+
+  const cars = context?.cars ?? props.cars ?? [];
+  const onDelete = context?.onDelete ?? props.onDelete;
 
   const addBtn = (
     <button className="btn primary" onClick={() => navigate("/cars/new")}>
