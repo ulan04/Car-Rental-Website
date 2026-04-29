@@ -1,3 +1,5 @@
+import React from "react";
+import PropTypes from "prop-types";
 import CarCard from "./CarCard";
 
 export default function CarGrid({ cars, onBook, onEdit, onDelete }) {
@@ -15,3 +17,10 @@ export default function CarGrid({ cars, onBook, onEdit, onDelete }) {
     </div>
   );
 }
+
+CarGrid.propTypes = {
+  cars: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onBook: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};

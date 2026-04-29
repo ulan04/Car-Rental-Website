@@ -1,29 +1,55 @@
+import React from "react";
+import PropTypes from "prop-types";
+
 export default function CarCard({ car, onBook, onEdit, onDelete }) {
   return (
     <div className="card">
-      <div className="card-title">
-        <h3>{car.name}</h3>
-        <span className="tag">{car.type}</span>
-      </div>
+      <img src={car.image} alt={car.name} className="car-card-img" />
 
-      <ul className="card-list">
-        <li><strong>Price per day:</strong> {car.pricePerDay} KZT</li>
-        <li><strong>Seats:</strong> {car.seats}</li>
-        <li><strong>Transmission:</strong> {car.transmission}</li>
-      </ul>
+      <div className="card-body">
+        <div className="card-title">
+          <h3>{car.name}</h3>
+          <span className="tag">{car.type}</span>
+        </div>
 
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <button className="btn" onClick={() => onBook(car)}>Book</button>
-        <button className="btn" onClick={() => onEdit(car.id)}>Edit</button>
+        <ul className="card-list">
+          <li><strong>Price per day:</strong> {car.pricePerDay.toLocaleString()} KZT</li>
+          <li><strong>Seats:</strong> {car.seats}</li>
+          <li><strong>Transmission:</strong> {car.transmission}</li>
+        </ul>
 
-        <button
-          className="btn"
-          onClick={() => onDelete(car)}
-          style={{ border: "1px solid #ff4d4f", color: "#ff4d4f", background: "transparent" }}
-        >
-          Delete
-        </button>
+        <div className="card-actions">
+          <button className="btn primary" onClick={() => onBook(car)}>
+            Book Now
+          </button>
+
+          <button className="btn" onClick={() => onEdit(car.id)}>
+            Edit
+          </button>
+
+          <button
+            className="btn danger"
+            onClick={() => onDelete(car.id)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
+CarCard.propTypes = {
+  car: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    pricePerDay: PropTypes.number.isRequired,
+    seats: PropTypes.number.isRequired,
+    transmission: PropTypes.string.isRequired,
+    image: PropTypes.string,
+  }).isRequired,
+  onBook: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};

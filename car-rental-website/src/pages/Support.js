@@ -23,8 +23,8 @@ export function SupportContact() {
     <div>
       <h3>Contact us</h3>
       <ul>
-        <li>Email: support@carrental.example</li>
-        <li>Phone: +7 (000) 555-1234</li>
+        <li>Email: Ulan@gmail.com</li>
+        <li>Phone: +7 (747) 378-9142</li>
         <li>Hours: 09:00 - 18:00 (Mon - Sat)</li>
       </ul>
     </div>
